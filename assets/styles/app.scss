@@ -1,10 +1,13 @@
 @import "~bootstrap/scss/bootstrap";
 
-$primary_Color: #131313;
+$primary-color: #2b2b2b;
 $second-color: #ef0f0f;
 $font-color: #fcfcfc;
 
 body {
-    background-color: $second-color;
+background-color: $primary-color;
 }
 
+nav.navbar {
+background-color: $second-color;
+}
