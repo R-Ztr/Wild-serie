@@ -1,11 +1,12 @@
 @import "~bootstrap/scss/bootstrap";
 
-$primary-color: #2b2b2b;
-$second-color: #ef0f0f;
-$font-color: #fcfcfc;
+$primary-color: #050505;
+$second-color: #ef0f0ff0;
+$font-color: rgb(244, 243, 243);
 
 body {
-background-color: $primary-color;
+    color: $font-color;
+    background-color: $primary-color;
 }
 
 nav.navbar {
