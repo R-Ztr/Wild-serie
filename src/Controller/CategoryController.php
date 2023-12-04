@@ -16,7 +16,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 class CategoryController extends AbstractController
 {
-    #[Route('/', name: 'category_index')]
+    #[Route('/', name: 'index')]
     public function index(CategoryRepository $categoryRepository): Response
     {
         $categories = $categoryRepository->findAll();
@@ -24,11 +24,10 @@ class CategoryController extends AbstractController
         return $this->render('category/index.html.twig', ['categories' => $categories]);
     }
     
-
+    
     #[Route('/new', name: 'new')]
 public function new(Request $request, EntityManagerInterface $entityManager) : Response
 {
-    
     $category = new Category();
     
     $form = $this->createForm(CategoryType::class, $category);
