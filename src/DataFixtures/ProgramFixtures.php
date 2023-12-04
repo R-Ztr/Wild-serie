@@ -6,7 +6,6 @@ use App\Entity\Program;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
-use Faker\Factory;
 
 class ProgramFixtures extends Fixture implements DependentFixtureInterface
 {
@@ -31,16 +30,16 @@ class ProgramFixtures extends Fixture implements DependentFixtureInterface
     public function load(ObjectManager $manager)
     {
         foreach (self::PROGRAMS as $programList) {
-        $program = new Program();
-        $program->setTitle($programList['title']);
-        $program->setSynopsis($programList['synopsis']);
-        $program->setCountry($programList['country']);
-        $program->setYear($programList['year']);
-        $program->setCategory($this->getReference($programList['category']));
-        $manager->persist($program);
-        $this->addReference('program_' . $programList['title'], $program);
-        }
-        $manager->flush();
+            $program = new Program();
+            $program->setTitle($programList['title']);
+            $program->setSynopsis($programList['synopsis']);
+            $program->setCountry($programList['country']);
+            $program->setYear($programList['year']);
+            $program->setCategory($this->getReference($programList['category']));
+            $manager->persist($program);
+            $this->addReference('program_' . $programList['title'], $program);
+            }
+            $manager->flush();
     }
 
     public function getDependencies()

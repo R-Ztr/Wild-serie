@@ -22,21 +22,21 @@ class Program
     #[ORM\Column(type: Types::TEXT)]
     private ?string $synopsis = null;
 
-    #[ORM\Column(length: 255, nullable:true)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $poster = null;
 
     #[ORM\ManyToOne(inversedBy: 'programs')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Category $category = null;
 
-    #[ORM\OneToMany(mappedBy: 'program_id', targetEntity: Season::class)]
-    private Collection $seasons;
-
     #[ORM\Column(length: 255)]
     private ?string $country = null;
 
     #[ORM\Column]
     private ?int $year = null;
+
+    #[ORM\OneToMany(mappedBy: 'program_id', targetEntity: Season::class)]
+    private Collection $seasons;
 
     public function __construct()
     {
@@ -96,6 +96,30 @@ class Program
         return $this;
     }
 
+    public function getCountry(): ?string
+    {
+        return $this->country;
+    }
+
+    public function setCountry(string $country): static
+    {
+        $this->country = $country;
+
+        return $this;
+    }
+
+    public function getYear(): ?int
+    {
+        return $this->year;
+    }
+
+    public function setYear(int $year): static
+    {
+        $this->year = $year;
+
+        return $this;
+    }
+
     /**
      * @return Collection<int, Season>
      */
@@ -122,30 +146,6 @@ class Program
                 $season->setProgramId(null);
             }
         }
-
-        return $this;
-    }
-
-    public function getCountry(): ?string
-    {
-        return $this->country;
-    }
-
-    public function setCountry(string $country): static
-    {
-        $this->country = $country;
-
-        return $this;
-    }
-
-    public function getYear(): ?int
-    {
-        return $this->year;
-    }
-
-    public function setYear(int $year): static
-    {
-        $this->year = $year;
 
         return $this;
     }
