@@ -12,22 +12,33 @@ use App\Repository\ProgramRepository;
 use App\Repository\SeasonRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 #[Route('/program', name: 'program_')]
 class ProgramController extends AbstractController
 {
-    //#[Route('/program/', name: 'program_index')]
     #[Route('/', name: 'index')]
-    public function index(ProgramRepository $programRepository): Response
+    public function index(ProgramRepository $programRepository, RequestStack $requestStack): Response
     {
         $programs = $programRepository->findAll();
+
+        $session = $requestStack->getSession();
+
+    if (!$session->has('total')) {
+        $session->set('total', 0); 
+    }
+
+    $total = $session->get('total');
         
         return $this->render('program/index.html.twig', [
             'programs' => $programs,
+            'session' => $session,
+            'total' => $total,
          ]);
     }
 
-    #[Route('/new', name: 'new')]
+    #[Route('/new', name: 'new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager) : Response
     {
         
@@ -41,20 +52,21 @@ class ProgramController extends AbstractController
             $entityManager->persist($program);
             $entityManager->flush();
     
+            $this->addFlash('success', 'The new program has been created');
+
             return $this->redirectToRoute('program_index');
         }
     
         return $this->render('program/new.html.twig', [
             'form' => $form,
+            'program' => $program,
         ]);
     }
 
     #[Route('/show/{id}', name: 'show')]
-    public function show(int $id, ProgramRepository $programRepository, /*SeasonRepository $seasonRepository*/):Response
+    public function show(int $id, ProgramRepository $programRepository):Response
     {
         $program = $programRepository->findOneBy(['id' => $id]);
-        
-       // $seasons = $seasonRepository->findBy(['program' => $id]);
 
         if (!$program) {
             throw $this->createNotFoundException(

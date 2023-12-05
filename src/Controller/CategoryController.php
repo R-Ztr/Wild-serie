@@ -25,7 +25,7 @@ class CategoryController extends AbstractController
     }
     
     
-    #[Route('/new', name: 'new')]
+    #[Route('/new', name: 'new', methods: ['GET', 'POST'])]
 public function new(Request $request, EntityManagerInterface $entityManager) : Response
 {
     $category = new Category();
@@ -37,6 +37,8 @@ public function new(Request $request, EntityManagerInterface $entityManager) : R
     if ($form->isSubmitted() && $form->isValid()) {
         $entityManager->persist($category);
         $entityManager->flush();
+
+        $this->addFlash('success', 'The new program has been created');
 
         return $this->redirectToRoute('category_index');
     }
