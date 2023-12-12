@@ -81,13 +81,13 @@ class ProgramController extends AbstractController
     }
 
     #[Route('/{slug}/season/{seasonId}', name: 'season_show')]
-    public function showSeason(int $programId, int $seasonId, ProgramRepository $programRepository, SeasonRepository $seasonRepository)
+    public function showSeason(Program $program, int $seasonId,  SeasonRepository $seasonRepository)
     {
-            $program = $programRepository->find($programId);
+            //$program = $programRepository->find($programId);
 
             if (!$program) {
                 throw $this->createNotFoundException(
-                    'No program with id : '. $programId .' found in program\'s table.'
+                    'No program with id : '. $program->getId() .' found in program\'s table.'
                 );
             }
 
@@ -107,12 +107,16 @@ class ProgramController extends AbstractController
     }
 
     #[Route('program/{slug}/season/{seasonId}/episode/{episodeId}', name: 'episode_show')]
-    public function showEpisode(int $programId, int $seasonId, int $episodeId, 
-    ProgramRepository $programRepository,
+    public function showEpisode(
+    //int $programId,
+    Program $program,
+    int $seasonId, 
+    int $episodeId, 
+    //ProgramRepository $programRepository,
     SeasonRepository $seasonRepository,
     EpisodeRepository $episodeRepository)
     {
-        $program = $programRepository->find($programId);
+        //$program = $programRepository->find($programId);
         $season = $seasonRepository->find($seasonId);
         $episode = $episodeRepository->find($episodeId);
 
@@ -122,4 +126,6 @@ class ProgramController extends AbstractController
             'episode' => $episode,
         ]);
     }
+
+
 }
