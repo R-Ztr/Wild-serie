@@ -10,6 +10,7 @@ use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use App\Entity\Actor;
 
 class ProgramType extends AbstractType
 {
@@ -21,7 +22,13 @@ class ProgramType extends AbstractType
             ->add('poster', TextType::class)
             ->add('country', TextType::class)
             ->add('year', NumberType::class)
-            ->add('category', EntityType::class, ['class' => Category::class, 'choice_label' => 'name']);
+            ->add('category', EntityType::class, ['class' => Category::class, 'choice_label' => 'name'])
+            ->add('actors', EntityType::class, [
+            'class' => Actor::class,
+            'choice_label' => 'firstname',
+            'multiple' => true,
+            'expanded' => true,
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
