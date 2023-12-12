@@ -10,10 +10,12 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Repository\ProgramRepository;
 use App\Repository\SeasonRepository;
+use App\Service\ProgramDuration;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
+//use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 #[Route('/program', name: 'program_')]
 class ProgramController extends AbstractController
@@ -39,16 +41,15 @@ class ProgramController extends AbstractController
     }
 
     #[Route('/new', name: 'new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager) : Response
+    public function new(Request $request, EntityManagerInterface $entityManager, SluggerInterface $slugger) : Response
     {
-        
         $program = new Program();
-        
         $form = $this->createForm(ProgramType::class, $program);
-        
         $form->handleRequest($request);
         
         if ($form->isSubmitted() && $form->isValid()) {
+            $slug = $slugger->slug($program->getTitle());
+            $program->setSlug($slug);
             $entityManager->persist($program);
             $entityManager->flush();
     
@@ -63,23 +64,23 @@ class ProgramController extends AbstractController
         ]);
     }
 
-    #[Route('/show/{id}', name: 'show')]
-    public function show(int $id, ProgramRepository $programRepository):Response
+    #[Route('/show/{slug}', name: 'show')]
+    public function show(Program $program, ProgramDuration $programDuration):Response
     {
-        $program = $programRepository->findOneBy(['id' => $id]);
+        //$program = $programRepository->findOneBy(['id' => $id]);
 
         if (!$program) {
             throw $this->createNotFoundException(
-                'No program with id : '.$id.' found in program\'s table.'
+                'No program with id : '.$program.' found in program\'s table.'
             );
         }
         return $this->render('program/show.html.twig', [
             'program' => $program,
-            //'seasons' => $seasons,
+            'programDuration' => $programDuration->calculate()
         ]);
     }
 
-    #[Route('/{programId}/season/{seasonId}', name: 'season_show')]
+    #[Route('/{slug}/season/{seasonId}', name: 'season_show')]
     public function showSeason(int $programId, int $seasonId, ProgramRepository $programRepository, SeasonRepository $seasonRepository)
     {
             $program = $programRepository->find($programId);
@@ -105,7 +106,7 @@ class ProgramController extends AbstractController
         ]);
     }
 
-    #[Route('program/{programId}/season/{seasonId}/episode/{episodeId}', name: 'episode_show')]
+    #[Route('program/{slug}/season/{seasonId}/episode/{episodeId}', name: 'episode_show')]
     public function showEpisode(int $programId, int $seasonId, int $episodeId, 
     ProgramRepository $programRepository,
     SeasonRepository $seasonRepository,

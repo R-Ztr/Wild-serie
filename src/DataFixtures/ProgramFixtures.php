@@ -6,9 +6,11 @@ use App\Entity\Program;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 class ProgramFixtures extends Fixture implements DependentFixtureInterface
 {
+    
     public const PROGRAMS = [
         ['title'=>'Murder', 'synopsis'=>'Annalise Keating, brillante avocate et professeur de droit, se retrouve impliquée dans une affaire de meurtre avec cinq de ses étudiants.', 'category'=>'category_Action', 'country' => 'France', 'year' => '2009'],
         ['title'=>'Vikings', 'synopsis'=>'Scandinavie, à la fin du 8ème siècle. Ragnar Lodbrok, un jeune guerrier viking, est avide d\'aventures et de nouvelles conquêtes. Lassé des pillages sur les terres de l\'Est, il se met en tête d\'explorer l\'Ouest par la mer.', 'category'=>'category_Action', 'country' => 'France', 'year' => '2009'],
@@ -27,12 +29,22 @@ class ProgramFixtures extends Fixture implements DependentFixtureInterface
         ['title'=>'Paranormal', 'synopsis'=>'Dans les années 1960, un hématologue est impliqué dans plusieurs événements inexplicables. Bien que sceptique de nature, il devient malgré lui un expert en phénomènes surnaturels et doit résoudre une série de cas mystérieux.', 'category'=>'category_Horreur', 'country' => 'Danemark', 'year' => '2012'],
     ];
 
+    private SluggerInterface $slugger;
+
+    public function __construct(SluggerInterface $slugger)
+    {
+        $this->slugger = $slugger;
+        
+    }
+
     public function load(ObjectManager $manager)
     {
         foreach (self::PROGRAMS as $programList) {
             $program = new Program();
             $program->setTitle($programList['title']);
             $program->setSynopsis($programList['synopsis']);
+            $slug = $this->slugger->slug($program->getTitle());
+            $program->setSlug($slug);
             $program->setCountry($programList['country']);
             $program->setYear($programList['year']);
             $program->setCategory($this->getReference($programList['category']));

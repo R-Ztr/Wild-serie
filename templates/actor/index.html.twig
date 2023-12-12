@@ -6,7 +6,7 @@
     <h1>Liste de tous les acteurs </h1>
     <ul>
      {% for actors in actor %}
-     <li><a href="{{ path("actor_show", { id: actors.id }) }}">{{ actors.firstname }}</a></li>
+     <li><a href="{{ path("actor_show", { slug: actors.slug }) }}">{{ actors.firstname }}</a></li>
     {% else %}
     <li>Aucun acteur pour cette série</li>
     {% endfor %}
