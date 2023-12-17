@@ -10,4 +10,5 @@
     {% else %}
     <li>Aucun acteur pour cette série</li>
     {% endfor %}
+    <img src="{{ vich_uploader_asset(program) }}" alt="{{ program.title }}">
 {% endblock %}
