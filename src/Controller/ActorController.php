@@ -16,28 +16,28 @@ class ActorController extends AbstractController
     #[Route('/', name: 'index', methods: ['GET'])]
     public function index(ActorRepository $actorRepository): Response
     {
-        $actor = $actorRepository->findAll();
+        $actors = $actorRepository->findAll();
         return $this->render('actor/index.html.twig', [ 
-            'actor' => $actor,
+            'actors' => $actors,
         ]);
     }
 
     #[Route('/{id}', name: 'show', methods: ['GET'])]
-    public function show(Actor $actors): Response
+    public function show(Actor $actor): Response
     {
-        if (!$actors) {
+        if (!$actor) {
             throw $this->createNotFoundException(
-                'No actor with id : '.$actors.' found in actor\'s table.'
+                'No actor with id : '.$actor.' found in actor\'s table.'
             );
         }
         return $this->render('actor/show.html.twig', [
-            'actors' => $actors,
+            'actor' => $actor,
         ]);
 
     }
 
-    #[ROUTE('/new', name: 'new')]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    #[Route('/new', name: 'new', methods: ['GET', 'POST'])]
+    public function new(Request $request, EntityManagerInterface $entityManager, ActorRepository $actor): Response
     {
         $actor = new Actor();
         $form = $this->createForm(ActorType::class, $actor);
@@ -47,15 +47,15 @@ class ActorController extends AbstractController
             $entityManager->persist($actor);
             $entityManager->flush();
 
-            $this->addFlash('success', 'The new actor has been created');
+            $this->addFlash('success', 'The new program has been created');
 
-
-            return $this->redirectToRoute('actor_index');
+            return $this->redirectToRoute('actor_index', [], Response::HTTP_SEE_OTHER);
         }
+
         return $this->render('actor/new.html.twig', [
-            'form' => $form
+            'actor' => $actor,
+            'form' => $form,
         ]);
-    
     }
 
 }

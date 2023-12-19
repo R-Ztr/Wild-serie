@@ -5,10 +5,14 @@
 {% block body %}
     <h1>Liste de tous les acteurs </h1>
     <ul>
-     {% for actors in actor %}
-     <li><a href="{{ path("actor_show", { id: actors.id }) }}">{{ actors.firstname }}</a></li>
+     {% for actor in actors %}
+     <li>
+        <a href="{{ path("actor_show", { id: actor.id }) }}">{{ actor.firstname }}</a>
+        <img src="{{ vich_uploader_asset(actor) }}" alt="{{ actor.firstname }}">
+    </li>
+
     {% else %}
     <li>Aucun acteur pour cette série</li>
     {% endfor %}
-    <img src="{{ vich_uploader_asset(program) }}" alt="{{ program.title }}">
-{% endblock %}
+
+{% endblock %} 

@@ -1,13 +1,13 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ actors.firstname }}{% endblock %}
+{% block title %}{{ actor.firstname }}{% endblock %}
 
 {% block body %}
-    <h1>{{ actors.firstname }}</h1>
+    <h1>{{ actor.firstname }}</h1>
     <div>
         <strong>Participe aux séries :</strong>
         <ul>
-            {% for program in actors.programs %}
+            {% for program in actor.programs %}
                 <li><a href="{{ path('program_show', {slug: program.slug}) }}">{{ program.title }}</a></li>
             {% else %}
                 <li>Aucune série associée</li>
